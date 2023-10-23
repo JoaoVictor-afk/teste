@@ -70,3 +70,53 @@ export default {
   },
 };
 </script>
+
+
+<!-- 
+import React, { useState } from "react";
+import "./App.css";
+
+const App = () => {
+  const [list, setList] = useState([
+    { id: 10, order: 1 },
+    { id: 20, order: 2 },
+    { id: 30, order: 3 },
+    { id: 40, order: 4 },
+    { id: 50, order: 5 },
+  ]);
+
+  const handleChange = (e, index) => {
+    const newList = [...list];
+    newList[index].order = parseInt(e.target.value);
+    setList(newList);
+  };
+
+  const handleSave = () => {
+    const newList = [...list];
+    newList.sort((a, b) => a.order - b.order);
+    for (let i = 0; i < newList.length; i++) {
+      newList[i].order = i + 1;
+    }
+    setList(newList);
+  };
+
+  return (
+    <div className="App">
+      <ul>
+        {list.map((item, index) => (
+          <li key={item.id}>
+            <input
+              type="number"
+              value={item.order}
+              onChange={(e) => handleChange(e, index)}
+            />
+            {item.id}
+          </li>
+        ))}
+      </ul>
+      <button onClick={handleSave}>Salvar</button>
+    </div>
+  );
+};
+
+export default App; -->

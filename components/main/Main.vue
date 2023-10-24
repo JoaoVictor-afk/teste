@@ -1,30 +1,23 @@
 <script setup>
-// const variants = ["elevated", "flat", "tonal", "outlined"];
+const variants = ["elevated", "flat", "tonal", "outlined"];
 const color = ref("indigo");
 </script> 
  
- <template>
+<template>
   <v-container>
     <v-row align="center" justify="center">
       <v-col cols="auto">
         <v-radio-group v-model="color" inline>
           <v-row align="center" justify="center">
-            <v-col cols="6" max-width="200">
+            <v-col cols="12" max-width="200">
               <v-text-field
                 persistent-hint
-                v-model.number="newOrder[0]"
+                v-model="newOrder"
                 label="New Order"
               ></v-text-field>
             </v-col>
-            <v-col cols="6" max-width="200">
-              <v-text-field
-                persistent-hint
-                v-model.number="newOrder[1]"
-                label="New Order"
-              ></v-text-field>
-            </v-col>
-            <v-col cols="6" align="center" justify="center" >
-              <v-btn  @click="reorderItems(newOrder[0],newOrder[1])" color="primary">Save</v-btn>
+            <v-col cols="6" align="center" justify="center">
+              <v-btn @click="reorderItems()" color="primary">Save</v-btn>
             </v-col>
           </v-row>
         </v-radio-group>
@@ -74,77 +67,40 @@ export default {
         { order: 9, id: 90 },
         { order: 10, id: 100 },
       ],
-      newOrder:[]
 
+      newOrder: null,
+      newIndex: null,
+      itemToMove: null,
     };
   },
   methods: {
-    
+    clearMessage() {
+      this.newOrder = "";
+    },
     reorderItems() {
-      const newIndex = parseInt(this.newOrder[0]) - 1;
-      console.log(newIndex)
-      const itemToMove = this.items.splice(this.newOrder[1]-1, 1)[0];
-      console.log(itemToMove)
+      this.newOrder = this.newOrder.split(" ");
+      console.log(this.newOrder);
+      if (this.newOrder[0] > this.newOrder[1]) {
+        this.newIndex = parseInt(this.newOrder[1] - 1);
+        this.itemToMove = this.items.splice(this.newOrder[0] - 1, 1)[0];
+        this.items.splice(this.newIndex, 0, this.itemToMove);
+      } else {
+        this.newIndex = parseInt(this.newOrder[0] - 1);
+        this.itemToMove = this.items.splice(this.newOrder[1] - 1, 1)[0];
+        this.items.splice(this.newIndex, 0, this.itemToMove);
+      }
 
-      this.items.splice(newIndex, 0, itemToMove);
-       this.items.forEach((item, index) => {
+      this.items.forEach((item, index) => {
         item.order = index + 1;
-       });
+      });
       this.items.sort((a, b) => a.order - b.order);
       this.items.forEach((item, index) => {
         item.order = index + 1;
       });
-    }
+      this.clearMessage();
+    },
   },
 };
 </script>
 
 
-<!-- 
-import React, { useState } from "react";
-import "./App.css";
-
-const App = () => {
-  const [list, setList] = useState([
-    { id: 10, order: 1 },
-    { id: 20, order: 2 },
-    { id: 30, order: 3 },
-    { id: 40, order: 4 },
-    { id: 50, order: 5 },
-  ]);
-
-  const handleChange = (e, index) => {
-    const newList = [...list];
-    newList[index].order = parseInt(e.target.value);
-    setList(newList);
-  };
-
-  const handleSave = () => {
-    const newList = [...list];
-    newList.sort((a, b) => a.order - b.order);
-    for (let i = 0; i < newList.length; i++) {
-      newList[i].order = i + 1;
-    }
-    setList(newList);
-  };
-
-  return (
-    <div className="App">
-      <ul>
-        {list.map((item, index) => (
-          <li key={item.id}>
-            <input
-              type="number"
-              value={item.order}
-              onChange={(e) => handleChange(e, index)}
-            />
-            {item.id}
-          </li>
-        ))}
-      </ul>
-      <button onClick={handleSave}>Salvar</button>
-    </div>
-  );
-};
-
-export default App; -->

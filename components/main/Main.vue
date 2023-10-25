@@ -1,5 +1,4 @@
 <script setup>
-const variants = ["elevated", "flat", "tonal", "outlined"];
 const color = ref("indigo");
 </script> 
  
@@ -12,8 +11,9 @@ const color = ref("indigo");
             <v-col cols="12" max-width="200">
               <v-text-field
                 persistent-hint
-                v-model="newOrder"
-                label="New Order"
+                placeholder="Ex:3 1"
+                v-model.integer="newOrder"
+                label="Nova ordem"
               ></v-text-field>
             </v-col>
             <v-col cols="6" align="center" justify="center">
@@ -24,13 +24,8 @@ const color = ref("indigo");
       </v-col>
     </v-row>
     <v-row align="center" justify="center">
-      <v-col v-for="(items, order) in items" :key="order" cols="auto">
-        <v-card
-          class="mx-auto"
-          max-width="344"
-          :color="color"
-          :variant="variant"
-        >
+      <v-col v-for="(items, index) in items" :key="index" cols="auto">
+        <v-card class="mx-auto" max-width="344" :color="color">
           <v-card-item>
             <div>
               <div class="text-overline mb-1"></div>
@@ -69,8 +64,6 @@ export default {
       ],
 
       newOrder: null,
-      newIndex: null,
-      itemToMove: null,
     };
   },
   methods: {
@@ -79,23 +72,16 @@ export default {
     },
     reorderItems() {
       this.newOrder = this.newOrder.split(" ");
-      console.log(this.newOrder);
       if (this.newOrder[0] > this.newOrder[1]) {
-        this.newIndex = parseInt(this.newOrder[1] - 1);
-        this.itemToMove = this.items.splice(this.newOrder[0] - 1, 1)[0];
-        this.items.splice(this.newIndex, 0, this.itemToMove);
+        this.items[this.newOrder[0] - 1].order = this.items[this.newOrder[1] - 1].order;
+        this.items[this.newOrder[1] - 1].order = this.items[this.newOrder[1]].order
       } else {
-        this.newIndex = parseInt(this.newOrder[0] - 1);
-        this.itemToMove = this.items.splice(this.newOrder[1] - 1, 1)[0];
-        this.items.splice(this.newIndex, 0, this.itemToMove);
+        this.items[this.newOrder[0] - 1].order = this.items[this.newOrder[1]].order;
+        this.items[this.newOrder[1]].order++;
       }
-
-      this.items.forEach((item, index) => {
-        item.order = index + 1;
-      });
       this.items.sort((a, b) => a.order - b.order);
       this.items.forEach((item, index) => {
-        item.order = index + 1;
+        item.order = index+1 ;
       });
       this.clearMessage();
     },
